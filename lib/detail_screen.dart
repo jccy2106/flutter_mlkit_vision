@@ -19,7 +19,7 @@ class _DetailScreenState extends State<DetailScreen> {
   Size? _imageSize;
   List<TextElement> _elements = [];
 
-  List<String>? _listEmailStrings;
+  List<String>? _listtextStrings;
 
   // Fetching the image size from the image file
   Future<void> _getImageSize(File imageFile) async {
@@ -50,19 +50,14 @@ class _DetailScreenState extends State<DetailScreen> {
     // Retrieving the RecognisedText from the InputImage
     final text = await _textDetector.processImage(inputImage);
 
-    // Pattern of RegExp for matching a general email address
-    String pattern =
-        r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$";
-    RegExp regEx = RegExp(pattern);
-
-    List<String> emailStrings = [];
+    List<String> textStrings = [];
 
     // Finding and storing the text String(s) and the TextElement(s)
     for (TextBlock block in text.textBlocks) {
       for (TextLine line in block.textLines) {
         print('text: ${line.lineText}');
         if (regEx.hasMatch(line.lineText)) {
-          emailStrings.add(line.lineText);
+          textStrings.add(line.lineText);
           for (TextElement element in line.textElements) {
             _elements.add(element);
           }
@@ -71,7 +66,7 @@ class _DetailScreenState extends State<DetailScreen> {
     }
 
     setState(() {
-      _listEmailStrings = emailStrings;
+      _listTextStrings = textStrings;
     });
   }
 
@@ -130,7 +125,7 @@ class _DetailScreenState extends State<DetailScreen> {
                           Padding(
                             padding: const EdgeInsets.only(bottom: 8.0),
                             child: Text(
-                              "Identified emails",
+                              "Identified text:",
                               style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
@@ -138,15 +133,15 @@ class _DetailScreenState extends State<DetailScreen> {
                             ),
                           ),
                           Container(
-                            height: 60,
+                            height: 460,
                             child: SingleChildScrollView(
-                              child: _listEmailStrings != null
+                              child: _listTextStrings != null
                                   ? ListView.builder(
                                       shrinkWrap: true,
                                       physics: BouncingScrollPhysics(),
-                                      itemCount: _listEmailStrings!.length,
+                                      itemCount: _listTextStrings!.length,
                                       itemBuilder: (context, index) =>
-                                          Text(_listEmailStrings![index]),
+                                          Text(_listTextStrings![index]),
                                     )
                                   : Container(),
                             ),
